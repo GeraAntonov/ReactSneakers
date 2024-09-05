@@ -1,45 +1,33 @@
-import react from 'react'
 import Delete from "../../assets/delete.svg";
-import Sneak1 from "../../assets/Sneakers/1.jpg";
 import arrowLeft from "../../assets/arrowLeft.svg";
+import "./cartDrawer.scss"
 
-export default function Drawer() {
+export default function Drawer({handleCloseDrawer, onRemove, cartItems = []}) {
     return (
-        <div style={{display: 'none'}} className="overlay">
+        <div className="overlay">
         <div className="drawer">
-            <h2 className=" d-flex justify-between mb-30 ">Корзина <img className='cu-p' src={Delete} alt="Удалить"/>
+            <h2 className=" d-flex justify-between mb-30 ">Корзина <img onClick={handleCloseDrawer} className='cu-p' src={Delete} alt="Удалить"/>
             </h2>
 
             <div className="items">
-                <div className="cartItem mb-20">
-                    <div style={{backgroundImage: `url(${Sneak1})`}} className="cartItemImage"></div>
+                {cartItems.map((obj)=> {
+                    return(
+                    <div className="cartItem mb-20">
+                        <div style={{backgroundImage: `url(${obj.image})`}} className="cartItemImage"></div>
 
-                    <div className="mr-20 flex">
-                        <p className="mb-5">Мужские кроссовки Nike Air Max 270</p>
-                        <b>12 999 руб.</b>
+                        <div className="mr-20 flex">
+                            <p className="mb-5">{obj.title}</p>
+                            <b>{obj.price}</b>
+                        </div>
+                        <img
+                            onClick={()=>{onRemove(obj.id)}}
+                            className='btn'
+                            src={Delete}
+                            alt="Удалить"
+                        />
                     </div>
-                    <img
-                        className='btn'
-                        src={Delete}
-                        alt="Удалить"
-                    />
-                </div>
-
-                <div className="cartItem mb-20">
-                    <div style={{backgroundImage: `url(${Sneak1})`}} className="cartItemImage"></div>
-
-                    <div className="mr-20 flex">
-                        <p className="mb-5">Мужские кроссовки Nike Air Max 270</p>
-                        <b>12 999 руб.</b>
-                    </div>
-                    <img
-                        className='btn'
-                        src={Delete}
-                        alt="Удалить"
-                    />
-                </div>
-
-
+                    )
+                })}
             </div>
 
             <div className="cartTotalBlock">
