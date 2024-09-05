@@ -26,6 +26,8 @@ function App(isAdded) {
        });
    },[]);
 
+
+
     const onAddToCart = (obj) => {
         axios.post('https://66b9b0dafa763ff550f9227e.mockapi.io/cart', obj);
         setCartItems((prev) => [...prev, obj])
