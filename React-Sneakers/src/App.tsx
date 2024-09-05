@@ -51,7 +51,7 @@ function App(isAdded) {
           <h1>{searchValue ? `Поиск по запросу: "${searchValue}"`: "Все кроссовки"}</h1>
             <div className="search-block d-flex">
 
-                
+
                 <img src={Loop}/>
                 {searchValue && (<img
                     onClick={()=>setSearchValue('')}
