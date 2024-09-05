@@ -50,6 +50,7 @@ function App(isAdded) {
         <div className="d-flex align-center justify-between mb-40">
           <h1>{searchValue ? `Поиск по запросу: "${searchValue}"`: "Все кроссовки"}</h1>
             <div className="search-block d-flex">
+
                 <img src={Loop}/>
                 {searchValue && (<img
                     onClick={()=>setSearchValue('')}
