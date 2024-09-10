@@ -1,23 +1,27 @@
 import FavUnliked from "../../assets/favorites-unliked.svg";
+import FavLiked from "../../assets/favorites-liked.svg";
 import Plus from "../../assets/btn-default.svg";
 import Success from "../../assets/btn-success.svg"
 import "./card.scss"
 import {useState,useEffect} from "react";
 
-export default function Card({ title, image, price, onClickFavorite, onClickPlus}) {
+export default function Card({ id,title, image, price, onClickFavorite, onClickPlus,favorited = false}) {
     const [ isAdded, setIsAdded] = useState(false)
+    const [ isFavorite, setIsFavorite] = useState(favorited)
 
     function handleIsAdded(){
-        onClickPlus({title, image, price,})
+        onClickPlus({title, image, price})
         setIsAdded(!isAdded)
     }
 
-    useEffect(()=>{
-    },[isAdded])
+    const clickFavorite = () => {
+        onClickFavorite({id,title, image, price})
+        setIsFavorite(!isFavorite);
+    }
 
     return (<div className="card">
         <div className="favorite">
-            <img src={FavUnliked} alt="Unlicked" onClick={onClickFavorite}/>
+            <img src={isFavorite ? FavLiked : FavUnliked} alt="Unlicked" onClick={clickFavorite}/>
         </div>
         <img width={133} height={112} src={image} alt=""/>
         <h5>{title}</h5>

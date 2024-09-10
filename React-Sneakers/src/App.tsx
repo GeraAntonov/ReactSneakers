@@ -1,18 +1,18 @@
 import './App.scss'
 import 'macro-css'
 import axios from "axios";
-import Card from './components/Card/Card.tsx'
+import {Route, Routes} from "react-router-dom";
+import {useEffect, useState} from "react";
 import Header from "./components/Header/Header.tsx";
 import Drawer from "./components/CartDrawer/Drawer.tsx";
-import Loop from './assets/Loop.svg'
-import FavUnliked from './assets/favorites-unliked.svg'
-import FavLiked from './assets/favorites-liked.svg'
-import {useEffect, useState} from "react";
-import Delete from "./assets/delete.svg";
+import Home from "./pages/Home.tsx"
+import Favorites from "./pages/Favorites.tsx";
+
 
 function App(isAdded) {
 
     const [items, setItems] = useState([]);
+    const [favorites, setFavorites] = useState([]);
     const [cartItems, setCartItems] = useState([]);
     const [cartOpened, setCartOpened] = useState(false);
     const [searchValue, setSearchValue] = useState('');
@@ -23,6 +23,9 @@ function App(isAdded) {
        });
        axios.get('https://66b9b0dafa763ff550f9227e.mockapi.io/cart').then((res) =>{
            setCartItems(res.data)
+       });
+       axios.get('https://66dc2b8b47d749b72acaed97.mockapi.io/Favorites').then((res) =>{
+           setFavorites(res.data)
        });
    },[]);
 
@@ -38,6 +41,20 @@ function App(isAdded) {
         console.log(cartItems)
     }
 
+    const onAddToFavorite = async (obj) => {
+        try {
+            if (favorites.find(favObj => favObj.id == obj.id)){
+                axios.delete(`https://66dc2b8b47d749b72acaed97.mockapi.io/Favorites/${obj.id}`)
+                setFavorites((prev) => prev.filter((item) => item.id !== obj.id))
+            } else {
+                const { data} = await axios.post('https://66dc2b8b47d749b72acaed97.mockapi.io/Favorites', obj);
+                setFavorites((prev)=> [...prev, data])
+            }
+        } catch (error) {
+            alert('Не удалось добавить в фавориты')
+        }
+    }
+
     const onChangeSearchInput = (event) =>{
         setSearchValue(event.target.value)
     }
@@ -45,39 +62,31 @@ function App(isAdded) {
   return (
     <div className="wrapper clear">
         {cartOpened && <Drawer cartItems = {cartItems} handleCloseDrawer = {() => setCartOpened(false)} onRemove={onRemoveItem}/>}
+
       <Header handleChangeCart = {() => setCartOpened(true)} />
-
-      <div className="content p-40">
-        <div className="d-flex align-center justify-between mb-40">
-          <h1>{searchValue ? `Поиск по запросу: "${searchValue}"`: "Все кроссовки"}</h1>
-            <div className="search-block d-flex">
-
-
-                <img src={Loop}/>
-                {searchValue && (<img
-                    onClick={()=>setSearchValue('')}
-                    className='clear cu-p'
-                    src={Delete} alt="Удалить"/>
-                )}
-                <input value={searchValue} onChange={onChangeSearchInput} placeholder="Поиск..."/>
-            </div>
-        </div>
-          <div className="d-flex flex-wrap">
-              {/*<Card title={arr[0].name} price={arr[0].price} image={arr[0].image}/>*/}
-            {/*<Card title={arr[1].name} price={arr[1].price} image={arr[1].image}/>*/}
-            {items.filter((item) => item.name.toLowerCase().includes(searchValue.toLowerCase()))
-                .map((item,index)=> {
-                    return <Card
-                    key={index}
-                    title={item.name}
-                    price={item.price}
-                    image={item.image}
-                    onClickFavorite= {() => console.log('YYYY')}
-                    onClickPlus = {(obj)=>onAddToCart(obj)}
+        <Routes>
+            <Route
+                path="/"
+                element={
+                    <Home
+                        items={items}
+                        searchValue={searchValue}
+                        setSearchValue={setSearchValue}
+                        onChangeSearchInput={onChangeSearchInput}
+                        onAddToFavorite={onAddToFavorite}
+                        onAddToCart={onAddToCart}
                     />
-            })}
-        </div>
-      </div>
+                }
+                exact
+            />
+            <Route
+                path="/favorites"
+                element={
+                    <Favorites items={favorites} onAddToFavorite={onAddToFavorite}/>
+                }
+                exact
+            />
+        </Routes>
     </div>
   )
 }
