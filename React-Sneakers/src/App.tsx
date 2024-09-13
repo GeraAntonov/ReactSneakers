@@ -9,6 +9,7 @@ import Home from "./pages/Home.tsx"
 import Favorites from "./pages/Favorites.tsx";
 
 
+
 function App(isAdded) {
 
     const [items, setItems] = useState([]);
@@ -17,28 +18,33 @@ function App(isAdded) {
     const [cartOpened, setCartOpened] = useState(false);
     const [searchValue, setSearchValue] = useState('');
 
-    useEffect(()=>{
-        axios.get('https://66b9b0dafa763ff550f9227e.mockapi.io/items').then((res)=>{
-            setItems(res.data);
-        });
-        axios.get('https://66b9b0dafa763ff550f9227e.mockapi.io/cart').then((res) =>{
-            setCartItems(res.data)
-        });
-        axios.get('https://66dc2b8b47d749b72acaed97.mockapi.io/Favorites').then((res) =>{
-            setFavorites(res.data)
-        });
+    useEffect(() => {
+        async function fetchData(){
+            const itemsResponse= await axios.get('https://66b9b0dafa763ff550f9227e.mockapi.io/items');
+            const cartResponse = await axios.get('https://66b9b0dafa763ff550f9227e.mockapi.io/cart');
+            const favoritesRespose = await axios.get('https://66dc2b8b47d749b72acaed97.mockapi.io/Favorites');
+
+                setItems(itemsResponse.data);
+                setCartItems(cartResponse.data);
+                setFavorites(favoritesRespose.data)
+        }
+        fetchData();
     },[]);
 
 
     const onAddToCart = (obj) => {
-        axios.post('https://66b9b0dafa763ff550f9227e.mockapi.io/cart', obj);
-        setCartItems((prev) => [...prev, obj])
+            if (cartItems.find((item) => item.id == obj.id)){
+                axios.delete(`https://66b9b0dafa763ff550f9227e.mockapi.io/cart/${obj.id}`);
+                setCartItems((prev) => prev.filter((item) => item.id !== obj.id))
+            } else {
+                axios.post('https://66b9b0dafa763ff550f9227e.mockapi.io/cart', obj);
+                setCartItems((prev) => [...prev, obj])
+            }
     }
 
     const onRemoveItem = (id) => {
         axios.delete(`https://66b9b0dafa763ff550f9227e.mockapi.io/cart/${id}`);
         setCartItems((prev) => prev.filter((item) => item.id !== id))
-        console.log(cartItems)
     }
 
     const onAddToFavorite = async (obj) => {
@@ -70,6 +76,7 @@ function App(isAdded) {
                     element={
                         <Home
                             items={items}
+                            cartItems={cartItems}
                             searchValue={searchValue}
                             setSearchValue={setSearchValue}
                             onChangeSearchInput={onChangeSearchInput}
@@ -82,7 +89,7 @@ function App(isAdded) {
                 <Route
                     path="/favorites"
                     element={
-                        <Favorites items={favorites} onAddToFavorite={onAddToFavorite}/>
+                        <Favorites items={favorites} onAddToFavorite={onAddToFavorite} onAddToCart={onAddToCart}/>
                     }
                     exact
                 />

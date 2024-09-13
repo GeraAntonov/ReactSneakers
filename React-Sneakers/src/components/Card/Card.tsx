@@ -5,12 +5,12 @@ import Success from "../../assets/btn-success.svg"
 import "./card.scss"
 import {useState,useEffect} from "react";
 
-export default function Card({ id,title, image, price, onClickFavorite, onClickPlus,favorited = false}) {
-    const [ isAdded, setIsAdded] = useState(false)
+export default function Card({ id,title, image, price, onClickFavorite, onClickPlus, favorited = false, added = false}) {
+    const [ isAdded, setIsAdded] = useState(added)
     const [ isFavorite, setIsFavorite] = useState(favorited)
 
     function handleIsAdded(){
-        onClickPlus({title, image, price})
+        onClickPlus({id, title, image, price})
         setIsAdded(!isAdded)
     }
 
