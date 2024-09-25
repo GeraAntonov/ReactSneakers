@@ -73,6 +73,11 @@
     cursor: pointer;
     transition: background 0.2s ease-in-out;
 
+    &:disabled {
+      background-color: #DFDFDF;
+      cursor: default;
+    }
+
     &:hover{
       background: lighten(#9DD458, 5%);
     }
