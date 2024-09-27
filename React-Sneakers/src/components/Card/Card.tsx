@@ -7,14 +7,15 @@ import React, {useState,useEffect} from "react";
 import ContentLoader from "react-content-loader";
 import AppContext from "../../context.tsx";
 
-export default function Card({ id,title, image, price, onClickFavorite, onClickPlus, favorited = false, loading = false}) {
-    const {isItemAdded} = React.useContext(AppContext)
+export default function Card({id, title, image, price, onClickFavorite, onClickPlus, favorited = false, loading = false}) {
+    const {isItemAdded, isItemFavorite} = React.useContext(AppContext)
     const [ isFavorite, setIsFavorite] = useState(favorited)
+    const itemObj =  {id, parentId: id, title, image, price }
     function handleIsAdded(){
-        onClickPlus({id, title, image, price})
+        onClickPlus(itemObj)
     }
     const clickFavorite = () => {
-        onClickFavorite({id,title, image, price})
+        onClickFavorite(itemObj)
         setIsFavorite(!isFavorite);
     }
 
@@ -36,7 +37,7 @@ export default function Card({ id,title, image, price, onClickFavorite, onClickP
                 </ContentLoader>
             ) : (<>
                 <div className="favorite">
-                    <img src={isFavorite ? FavLiked : FavUnliked} alt="Unlicked" onClick={clickFavorite}/>
+                    {onClickFavorite && <img src={isItemFavorite(id) ? FavLiked : FavUnliked} alt="Unlicked" onClick={clickFavorite}/>}
                 </div>
                 <img width="100%" height={130} src={image} alt=""/>
                 <h5>{title}</h5>
@@ -45,8 +46,9 @@ export default function Card({ id,title, image, price, onClickFavorite, onClickP
                         <span>Цена:</span>
                         <b>{price} руб.</b>
                     </div>
-                    <img className="btn-plus" onClick={handleIsAdded} width={11} height={11}
-                         src={isItemAdded(id) ? Success : Plus} alt="Plus"/>
+                    { onClickPlus &&
+                        <img className="btn-plus" onClick={handleIsAdded} width={11} height={11}
+                         src={isItemAdded(id) ? Success : Plus} alt="Plus"/>}
                 </div>
             </> )}
 
