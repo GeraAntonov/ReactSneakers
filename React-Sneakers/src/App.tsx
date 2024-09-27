@@ -10,10 +10,6 @@ import Home from "./pages/Home.tsx"
 import Favorites from "./pages/Favorites.tsx";
 import AppContext from "./context.tsx";
 import Orders from "./pages/Orders.tsx";
-import {createLogger} from "vite";
-import {types} from "sass";
-import Number = types.Number;
-
 
 function App(isAdded) {
 
