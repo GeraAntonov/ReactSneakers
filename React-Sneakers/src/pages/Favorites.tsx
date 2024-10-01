@@ -7,6 +7,7 @@ import {Link} from "react-router-dom";
 
 function Favorites ({onAddToFavorite,onAddToCart}) {
     const {favorites} = React.useContext(AppContext)
+
     return (
         <div className="content p-40">
             {favorites.length > 0 ? (
@@ -18,9 +19,8 @@ function Favorites ({onAddToFavorite,onAddToCart}) {
                         {favorites.map((item, index) => {
                             return <Card
                                 key={index}
-                                favorited={true}
-                                onClickPlus={onAddToCart}
-                                onClickFavorite={onAddToFavorite}
+                                onClickPlus={(obj) => onAddToCart(obj)}
+                                onClickFavorite={(obj) => onAddToFavorite(obj)}
                                 {...item}
                             />
                         })}
