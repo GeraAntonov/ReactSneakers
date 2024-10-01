@@ -77,15 +77,16 @@ function App(isAdded) {
 
     const onAddToFavorite = async (obj) => {
         try {
-            if (favorites.find(favObj => favObj.id == obj.id)){
-                axios.delete(`https://66dc2b8b47d749b72acaed97.mockapi.io/Favorites/${obj.id}`)
-                setFavorites((prev) => prev.filter((item) => item.id !== obj.id))
+            const findItem = favorites.find(favObj => favObj.title == obj.title)
+            if (findItem){
+                axios.delete(`https://66dc2b8b47d749b72acaed97.mockapi.io/Favorites/${findItem.id}`)
+                setFavorites((prev) => prev.filter((item) => item.title !== obj.title))
             } else {
                 const { data} = await axios.post('https://66dc2b8b47d749b72acaed97.mockapi.io/Favorites', obj);
                 setFavorites((prev)=> [...prev, data])
             }
         } catch (error) {
-            alert('Не удалось добавить в фавориты')
+            alert('Не удалось добавить в избранные')
             console.log(error)
         }
     }
@@ -98,8 +99,8 @@ function App(isAdded) {
         return cartItems.some((obj) => obj.parentId == id)
     }
 
-    const isItemFavorite = (id)  => {
-        return favorites.some((obj) => obj.id == id)
+    const isItemFavorite = (title)  => {
+        return favorites.some((obj) => obj.title == title)
     }
 
     return (
@@ -126,8 +127,7 @@ function App(isAdded) {
                                 isLoading={isLoading}
                             />
                         }
-                        exact
-                    />
+                        exact/>
                     <Route
                         path="/favorites"
                         element={
@@ -135,8 +135,7 @@ function App(isAdded) {
                                 onAddToFavorite={onAddToFavorite}
                                 onAddToCart={onAddToCart}/>
                         }
-                        exact
-                    />
+                        exact/>
                     <Route
                         path="/orders"
                         element={

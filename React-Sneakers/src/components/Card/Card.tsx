@@ -6,17 +6,16 @@ import "./card.scss"
 import React, {useState,useEffect} from "react";
 import ContentLoader from "react-content-loader";
 import AppContext from "../../context.tsx";
+import {createLogger} from "vite";
 
 export default function Card({id, title, image, price, onClickFavorite, onClickPlus, favorited = false, loading = false}) {
-    const {isItemAdded, isItemFavorite} = React.useContext(AppContext)
-    const [ isFavorite, setIsFavorite] = useState(favorited)
+    const {isItemAdded, isItemFavorite, favorites} = React.useContext(AppContext)
     const itemObj =  {id, parentId: id, title, image, price }
     function handleIsAdded(){
         onClickPlus(itemObj)
     }
     const clickFavorite = () => {
         onClickFavorite(itemObj)
-        setIsFavorite(!isFavorite);
     }
 
     return (
@@ -37,7 +36,7 @@ export default function Card({id, title, image, price, onClickFavorite, onClickP
                 </ContentLoader>
             ) : (<>
                 <div className="favorite">
-                    {onClickFavorite && <img src={isItemFavorite(id) ? FavLiked : FavUnliked} alt="Unlicked" onClick={clickFavorite}/>}
+                    {onClickFavorite && <img src={isItemFavorite(title) ? FavLiked : FavUnliked}  alt="Unlicked" onClick={clickFavorite}/>}
                 </div>
                 <img width="100%" height={130} src={image} alt=""/>
                 <h5>{title}</h5>
